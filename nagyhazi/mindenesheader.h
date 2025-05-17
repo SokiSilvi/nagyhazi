@@ -1009,3 +1009,5 @@ void palya() {}
 
 
 //ez egy teszt teszt itt
+
+// other test comment
