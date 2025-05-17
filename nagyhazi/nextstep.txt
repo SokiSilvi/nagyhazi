@@ -1,0 +1,10 @@
+   _______
+  /       \    What do you want to modify?
+ / __   __ \   ________________             
+| <__>-<__> | |                |            
+|   ˛/      | | e-mail account |            
+|    ˇ__    | | password       |             
+ \    \_|  /  | username       |            
+  \_______/   |________________|
+
+Or: press escape to home page

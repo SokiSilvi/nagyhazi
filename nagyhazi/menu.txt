@@ -1,0 +1,10 @@
+   | MENU:                               |
+   |                                     |
+   |   o Play New Game                   |
+   |   o Return to game                  |
+   |   o See finished table              |
+   |   o Read all reviews                |
+   |   o Write review                    |
+   |   o Modify profile                  |
+   |   o LASAGNAAAAAAAAAAAA              |
+   |_____________________________________|
