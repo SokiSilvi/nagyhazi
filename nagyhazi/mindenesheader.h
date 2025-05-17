@@ -1005,3 +1005,7 @@ Mezo* ujjatek() {
 
 
 void palya() {}
+
+
+
+//ez egy teszt teszt itt
