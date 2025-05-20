@@ -48,3 +48,13 @@ Becenév: user
 Jelszo: Jelszo123
 Jatszott: 0
 
+e-mail cím: soki.szilvia03@gmail.com
+Becenév: SzilvasGuba
+Jelszo: plumpieee
+Jatszott: 0
+
+e-mail cím: szalai.gizella@gmail.com
+Becenév: Gizah
+Jelszo: furafura
+Jatszott: 0
+

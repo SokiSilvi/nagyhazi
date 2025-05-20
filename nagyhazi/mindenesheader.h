@@ -36,10 +36,13 @@ public:
 
     Mezo(int x, int y, std::string id, bool stone, bool real, bool side, bool free) : Pont(x, y), id(id), stone(stone), real(real), side(side), free(free) {}
     Mezo() : Pont(-1, -1), id("NA"), stone(0), real(0), side(1), free(0) {}
-    void stoned() { stone = true; free = false; }
-    void catted() { free = false; }
-    void setfree() { free = true; }
-    void side() { side = true; }
+    void stoned() { this->stone = true; this->free = false; } 
+    void catted() { this->free = false; }
+    void setfree() { this->free = true; }
+    void sides() { this->side = true; } 
+    std::string getid() { return id; }
+    bool getfree() { return free; }
+
     std::string drawline1() {
         if (not real) return "   ";
         else {
@@ -50,10 +53,11 @@ public:
     std::string drawline2() {
         if (not real) return "   ";
         else {
-            if (not stone) return "|__";
+            if (not stone) return "|__"; 
             else return "|||";
         }
     }
+    bool operator==(Mezo masik) { return masik.getid() == this->getid(); }
     virtual Mezo& toplefth() { throw "BHPG3H"; }
     virtual Mezo& toprighth() { throw "BHPG3H"; }
     virtual Mezo& toph() { throw "BHPG3H"; }
@@ -236,12 +240,12 @@ class User {
 public:
 
     User(std::string email, std::string nickname, std::string password) : email(email), nickname(nickname), password(password), games(0) {}
-    User() : email("JohnDoe@gmail.com"), nickname("JohnDoe"), password("JohnDoe123") {}
+    User() : email("JohnDoe@gmail.com"), nickname("JohnDoe"), password("JohnDoe123"), games(0) {} 
     void setjatszott(int jatszottt) { games = jatszottt; }
     void setpass(std::string pass) { password = pass; }
     std::string getname() { return nickname; }
     std::string getmail() { return email; }
-    virtual void lep() {}
+    virtual Mezo* lep(Mezo* tabla, int length, int width) { return tabla; }
 
 };
 
@@ -252,7 +256,7 @@ public:
     Man(std::string email, std::string nickname, std::string password) : User(email, nickname, password) {}
     Man(User user) : User(user) {}
     Man() : User() {}
-    void lep() {}
+    Mezo* lep(Mezo* tabla, int length, int width);
 
 };
 
@@ -266,7 +270,9 @@ public:
     Cat(User user, Mezo where) : User(user), where(where) {}
     Cat(User user) : User(user), where(-1, -1, "NA", 0, 0, 0, 0) {}
     Cat() : User(), where(-1, -1, "NA", 0, 0, 0, 0) {}
-    void lep() {}
+    Mezo hol() { return where; }
+    Mezo* lep(Mezo* tabla, int length, int width); 
+    void merre(Mezo wheres) { where = wheres; }
     void drawline() { std::cout << "|OO"; }   
 
 };
@@ -330,7 +336,7 @@ int arrowfind(int elsovalasz, int maxvalasz, const char* fajlnev, int ertekeles)
 
     int jelenlegi = 0;
     econio_rawmode();
-    fajlkiolvas("cica line-art.txt");
+    fajlkiolvas("cica-line-art.txt");
     jelenlegi = valaszto(elsovalasz, maxvalasz, jelenlegi, fajlnev, ertekeles); 
 
     while (true) {
@@ -340,7 +346,7 @@ int arrowfind(int elsovalasz, int maxvalasz, const char* fajlnev, int ertekeles)
 
             jelenlegi--;
             for (int i = 0; i < 25; i++) std::cout << "\n";
-            fajlkiolvas("cica line-art.txt");
+            fajlkiolvas("cica-line-art.txt");
             jelenlegi = valaszto(elsovalasz, maxvalasz, jelenlegi, fajlnev, ertekeles);
 
         }
@@ -348,7 +354,7 @@ int arrowfind(int elsovalasz, int maxvalasz, const char* fajlnev, int ertekeles)
 
             jelenlegi++;
             for (int i = 0; i < 25; i++) std::cout << "\n";
-            fajlkiolvas("cica line-art.txt");
+            fajlkiolvas("cica-line-art.txt");
             jelenlegi = valaszto(elsovalasz, maxvalasz, jelenlegi, fajlnev, ertekeles);
 
         }
@@ -381,7 +387,8 @@ void csillag(double star) {
 
         int i = 0;
         for (; i < star - 1; i++) std::cout << fajlsor;
-        for (double j = 0; j <= (star - i); j += 0.1) std::cout << fajlsor[1 + 10 * j];
+        for (double j = 0; j <= (star - i); j += 0.1)
+            std::cout << fajlsor[1 + static_cast<std::size_t>(10 * j)];
         std::cout << "\n";
 
     }
@@ -402,7 +409,7 @@ void animate() {
         std::this_thread::sleep_for(std::chrono::seconds(2));
     }
     system("pause >nul");
-    fajlkiolvas("lasagna recipe.txt");
+    fajlkiolvas("lasagna-recipe.txt");
     system("pause >nul");
 
 }
@@ -550,7 +557,7 @@ std::string mail(std::string cim, std::string body) {
     std::string username = "szilvi.egyetemi@gmail.com"; // Saját email címed
     std::string password = "ecps ivbm gnum mhrq";     // App Password, nem sima jelszó
 
-    srand(time(0));
+    srand(static_cast<unsigned int>(time(0)));
     std::string key = std::to_string(rand());
 
     std::string recipient = cim;
@@ -882,7 +889,14 @@ User szemelyek(std::string paratlan, std::string paros, std::string kit, std::st
 
 
 
-void tablarajzol(Mezo* tabla, int width, int length) {
+void tablarajzol(Mezo* tabla, int width, int length, Cat cica) {
+
+    std::cout << "  ";
+    std::string betuk = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 0; i < length; i++) std::cout << " " << betuk[i] << " ";
+    std::cout << "\n";
+    for (int i = 0; i < length; i++) std::cout << "___";
+    std::cout << "\n";
 
     for (int i = 0; i < width; i++) {
 
@@ -890,8 +904,17 @@ void tablarajzol(Mezo* tabla, int width, int length) {
 
             for (int j = 0; j < length; j++) { 
 
-                if (z == 0) std::cout << tabla[i * length + j].drawline1(); 
-                else std::cout << tabla[i * length + j].drawline2();  
+                if (z == 0) { 
+
+                    if (j == 0) std::cout << i << " ";
+                    if (cica.hol() == tabla[i * length + j]) cica.drawline();
+                    else std::cout << tabla[i * length + j].drawline1(); 
+
+                }
+                else { 
+                    if (j == 0) std::cout << "  ";
+                    std::cout << tabla[i * length + j].drawline2(); 
+                }
 
             }
             std::cout << "| \n";
@@ -924,38 +947,108 @@ void tablarajzol(Mezo* tabla, int width, int length) {
 /// <returns>
 /// The piece moved away by the corresponding params rom the original piece, or an unexisting piece if cant find any
 /// </returns>
-Mezo keresszomszed(Mezo* tabla, Mezo mezo, int xdiff, int ydiff, int length) {  
+Mezo keresszomszed(Mezo* tabla, Mezo mezo, int xdiff, int ydiff, int length, int width) {   
 
     Mezo invalid; 
     int keresettx = mezo.getx() + xdiff;
     int keresetty = mezo.gety() + ydiff;
-    for (int i = 0; i < length; i++) {
+    for (int i = 0; i < width * length; i++) { 
 
-        if (tabla[i].getx() == keresettx && tabla[i].gety() == keresetty) return tabla[i];
+        if (tabla[i].getx() == keresettx && tabla[i].gety() == keresetty && tabla[i].getfree()) return tabla[i];
 
     }
+
+
+
     return invalid;
 }
 
 
 
-Mezo* tablagyarto(Mezo* mezok, int length, int width, int height) {    
 
-    for (int i = 0; i < length; i++) {
 
-        int x = mezok[i].getx(); 
-        int y = mezok[i].gety();
+Mezo* Man::lep(Mezo* tabla, int width, int length) { 
 
-        if (x == 0) {
+    bool lepett = false;
+    while (not(lepett)) {
 
-            if (y == 0) mezok[i] = TopLeft(mezok[i], keresszomszed(mezok, mezok[i], 1, 1, length), keresszomszed(mezok, mezok[i], 0, 1, length), keresszomszed(mezok, mezok[i], 1, 0, length));
-            if (y == width - 1) mezok[i] = TopRight(mezok[i], keresszomszed(mezok, mezok[i], -1, 1, length), keresszomszed(mezok, mezok[i], 0, 1, length), keresszomszed(mezok, mezok[i], -1, 0, length));
+        fajlkiolvas("box.txt");
 
-        }
 
     }
-    return mezok;
+
 }
+
+
+bool catstepcorrect(Mezo next) {  
+
+    Mezo invalid;
+    if (not(next == invalid)) return true; 
+    return false; 
+
+}
+
+
+
+Mezo* tableuncat(Mezo* tabla, int width, int length, Mezo now, Mezo next) {
+
+    for (int i = 0; i < width * length; i++) {
+
+        if (tabla[i] == now) tabla[i].setfree(); 
+        if (tabla[i] == next) { tabla[i].catted(); }
+
+    }
+    return tabla;
+
+}
+
+
+
+Mezo* Cat::lep(Mezo* tabla, int width, int length) { 
+
+    bool lepett = false;
+    fajlkiolvas("controlcat.txt");
+    Mezo next;
+    econio_rawmode();
+    while (not(lepett)) {
+
+        int key = econio_getch();
+        switch (key)
+        {
+        case(KEY_LEFT): { next = keresszomszed(tabla, this->where, 0, -1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_RIGHT): { next = keresszomszed(tabla, this->where, 0, 1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_UP): { next = keresszomszed(tabla, this->where, -1, 0, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_DOWN): { next = keresszomszed(tabla, this->where, 1, 0, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_CTRLDOWN): { next = keresszomszed(tabla, this->where, 1, 1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_CTRLUP): { next = keresszomszed(tabla, this->where, -1, -1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_CTRLLEFT): { next = keresszomszed(tabla, this->where, 1, -1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case((KEY_CTRLRIGHT)): { next = keresszomszed(tabla, this->where, -1, 1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        default:
+            break;
+        }
+        
+
+    }
+    econio_normalmode(); 
+    return tabla; 
+
+}
+
+
+
+
+void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
+
+    while (true)
+    {
+        tabla = cat.lep(tabla, width, length); 
+        tablarajzol(tabla, width, length, cat);   
+    }
+
+}
+
+
+
 
 
 
@@ -964,8 +1057,8 @@ Mezo* ujjatek() {
     Man man;
     Cat cat; 
 
-    cat = szemelyek("catplaersinin.txt", "catplaerregist.txt", "cica line-art.txt", "oswald.txt"); 
-    man = szemelyek("manplayersignin.txt", "manplayerregist.txt", "gazda line-art.txt", "spencer.txt");
+    cat = szemelyek("catplaersinin.txt", "catplaerregist.txt", "cica-line-art.txt", "oswald.txt"); 
+    man = szemelyek("manplayersignin.txt", "manplayerregist.txt", "gazda-line-art.txt", "spencer.txt");
 
     bool shape = bipolar("shapesquare.txt", "shapepolygon.txt");
 
@@ -976,7 +1069,7 @@ Mezo* ujjatek() {
 
     Mezo* pontok = new Mezo[width*length]; 
 
-    std::string szamok = "0123456789";
+    std::string szamok = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
     for (int i = 0; i < width; i++)
     {
@@ -993,14 +1086,37 @@ Mezo* ujjatek() {
 
         }
     }
-    std::cout << "\n \n \n \n \n \n \ \n";
-    tablarajzol(pontok, width, length); 
 
-   
+    int coor = static_cast<int>(width / 2) * length + static_cast<int>(length / 2);
+    std::cout << int(width / 2) << " * " << length << " + " << int(length / 2) << " = " << int((width / 2) * length) << " + " << int(length / 2) << "\n\n\n\n";
+    cat.merre(pontok[coor]);
+    srand(static_cast<unsigned int>(time(0)));
+
+    for (int i = 0; i < width * length; i++) {
+
+        if (pontok[i].getx() == 0 || pontok[i].gety() == 0 || pontok[i].getx() == length - 1 || pontok[i].gety() == width - 1) pontok[i].sides();
+        int random = rand() % 10; 
+        std::cout << random << "\n";
+        if (random < 4 && not(cat.hol() == pontok[i])) pontok[i].stoned();
+
+    }
 
 
-    return pontok; 
+
+
+    std::cout << "\n \n \n \n \n \n \ \n"; 
+    tablarajzol(pontok, width, length, cat);  
+
+    jatsz(pontok, cat, man, length, width); 
+
+    
+
+    return pontok;  
 }
+
+
+
+
 
 
 

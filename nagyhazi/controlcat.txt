@@ -1,0 +1,19 @@
+                                                                            ^
+     /\        /\                                                     arrow |
+    //\\______//\\                                                   ^  /\
+   |              |     You move next!!                 CTRL + arrow | /||\  CTRL + arrow -->
+  /   ___    ___   \    Please move smart!                          \\  ||  //            
+ /\__/ ^ \__/ ^ \__/\                                                \\ || //
+ |   \_V_//\\_V_/   |   The controls are on the                   ____\\||//____
+ |        \/        |   right                           arrow <-  ----      ---- arrow -->
+ \  |     ||    |   /                                                 //||\\
+  \  \___/  \__/   /    I believe in you!!                           // || \\                      
+   \______________/                                                 //  ||  \\           
+                                                       CTRL + arrow <- \||/  CTRL + arrow |
+                                                                        \/                ˇ
+                                                                      arrow |
+                                                                            ˇ
+
+
+
+
