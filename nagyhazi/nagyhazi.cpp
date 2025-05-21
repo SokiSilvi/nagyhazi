@@ -27,16 +27,13 @@ int main()
     while (true)
     {
         int valasztas = arrowfind(2, 6, "menu.txt", 3);
-        switch (valasztas)
-        {
-        case 0: ujjatek();
-        case 4: ertekel();
-        case 5: usermodosit();
-        case 6: animate();  
-        
-        default:
-            break;
-        }
+
+        if (valasztas == 0) ujjatek(); 
+        if (valasztas == 3) walkcomments();
+        if (valasztas == 4) ertekel();
+        if (valasztas == 5) usermodosit();
+        if (valasztas == 6) animate();  
+
     }
     
 }

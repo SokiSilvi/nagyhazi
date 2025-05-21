@@ -41,7 +41,7 @@ Jatszott: 0
 e-mail cím: soki.szilvia03@gmail.com
 Becenév: o
 Jelszo: o
-Jatszott: 0
+Jatszott: 3
 
 e-mail cím: turcsanyimilan@gmail.com
 Becenév: user
@@ -57,4 +57,14 @@ e-mail cím: szalai.gizella@gmail.com
 Becenév: Gizah
 Jelszo: furafura
 Jatszott: 0
+
+e-mail cím: szilvi.egyetemi@gmail.com
+Becenév: szabi
+Jelszo: almaalma
+Jatszott: 1
+
+e-mail cím: szilvi.egyetemi@gmail.com
+Becenév: sanyimacska
+Jelszo: deszep
+Jatszott: 1
 

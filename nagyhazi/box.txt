@@ -11,3 +11,4 @@
    ||__|_|__|_|                             ||__|__||__|
                                                      
       The coordinates of the square you wanna put to?
+                Eg.: Oswald is on square 

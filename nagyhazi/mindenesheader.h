@@ -42,6 +42,7 @@ public:
     void sides() { this->side = true; } 
     std::string getid() { return id; }
     bool getfree() { return free; }
+    bool getside() { return side; }
 
     std::string drawline1() {
         if (not real) return "   ";
@@ -53,7 +54,7 @@ public:
     std::string drawline2() {
         if (not real) return "   ";
         else {
-            if (not stone) return "|__"; 
+            if (not stone) return "|__";  
             else return "|||";
         }
     }
@@ -280,6 +281,22 @@ public:
 
 
 
+class comment {
+
+    std::string nev;
+    double star;
+    std::string szoveg;
+
+public:
+
+    comment(std::string nev, double csillag, std::string szoveg) : nev(nev), star(csillag), szoveg(szoveg) {}; 
+    void prnt();
+
+};
+
+
+
+
 
 
 
@@ -336,6 +353,7 @@ int arrowfind(int elsovalasz, int maxvalasz, const char* fajlnev, int ertekeles)
 
     int jelenlegi = 0;
     econio_rawmode();
+    for (int i = 0; i < 50; i++) std::cout << "\n";
     fajlkiolvas("cica-line-art.txt");
     jelenlegi = valaszto(elsovalasz, maxvalasz, jelenlegi, fajlnev, ertekeles); 
 
@@ -376,9 +394,9 @@ int arrowfind(int elsovalasz, int maxvalasz, const char* fajlnev, int ertekeles)
 
 
 
-void csillag(double star) { 
+void csillag(double star, double needquestion) { 
 
-    fajlkiolvas("ertekelj.txt");
+    if (needquestion) fajlkiolvas("ertekelj.txt"); 
 
     std::ifstream fajl("csillag.txt");
     std::string fajlsor;
@@ -596,7 +614,7 @@ bool vanuser(const std::string keresett) {
     while (std::getline(file, sor)) {
         if (sor.rfind("Becenév:", 0) == 0) { // ha a sor "Becenév:"-vel kezdõdik
             std::string becenev = sor.substr(9); // 8 karaktert kihagy ("Becenév: ")
-            std::cout << "Az aktualisan nezett becenev " << becenev << "mig a keresett " << keresett << "!\n";
+            //std::cout << "Az aktualisan nezett becenev " << becenev << "mig a keresett " << keresett << "!\n";
             if (becenev == keresett) {
                 return true;
             }
@@ -787,9 +805,9 @@ bool usermodosit() {
 }
 
 
-double leftright(double start, double diff, std::function<void(double)> muvelet, double min, double max) {
+double leftright(double start, double diff, std::function<void(double, bool)> muvelet, double min, double max, bool funchoz) { 
 
-    muvelet(start);
+    muvelet(start, funchoz); 
     econio_rawmode();
 
     while (true) {
@@ -798,13 +816,13 @@ double leftright(double start, double diff, std::function<void(double)> muvelet,
         if (key == KEY_RIGHT) {
 
             if (start < max) start += diff; 
-            muvelet(start);
+            muvelet(start, funchoz);  
 
         }
         if (key == KEY_LEFT) {
 
             if (start > min) start -= diff;  
-            muvelet(start);
+            muvelet(start, funchoz); 
 
         }
         if (key == KEY_ENTER) break;
@@ -822,7 +840,7 @@ double leftright(double start, double diff, std::function<void(double)> muvelet,
 void ertekel() {
 
     User user = bejelentkezes();
-    double star = leftright(0.1, 0.1, csillag, 0.1, 5);
+    double star = leftright(0.1, 0.1, csillag, 0.1, 5, true);
 
     for (int i = 0; i < 50; i++) std::cout << "\n";
     fajlkiolvas("specify.txt");
@@ -846,12 +864,99 @@ void ertekel() {
 
 
 
+void comment::prnt() {
+
+    for (int i = 0; i < 50; i++) std::cout << "\n";
+    for (int i = 0; i < 100; i++ ) std::cout << "~";
+    std::cout << "\n  " << nev << "\n";
+    for (size_t i = 0; i < nev.size() + 2; i++) std::cout << "_";
+    csillag(star, false);
+    std::cout << szoveg;  
+    fajlkiolvas("commentsection.txt");
+    for (int i = 0; i < 100; i++) std::cout << "~";
+
+}
+
+
+comment** read_comments(size_t& count, const std::string& filename = "velemenyek.txt") {
+    std::ifstream file(filename);
+    if (!file) {
+        count = 0;
+        return nullptr;
+    }
+
+    // First, count the number of comments (each comment is 3 lines, skip empty lines)
+    size_t comment_lines = 0;
+    std::string tmp; 
+    while (std::getline(file, tmp)) { 
+        if (!tmp.empty()) ++comment_lines; 
+    }
+    file.clear(); 
+    file.seekg(0); 
+
+    size_t max_comments = comment_lines / 3 + 1; 
+    comment** comments = new comment * [max_comments]; 
+    count = 0; 
+
+    std::string line; 
+    while (std::getline(file, line)) { 
+        if (line.empty()) continue; // skip empty lines
+
+        std::string nev = line;
+
+        // Read rating line
+        if (!std::getline(file, line)) break;
+        std::istringstream iss(line);
+        double csillag;
+        iss >> csillag;
+
+        // Read text line
+        if (!std::getline(file, line)) break;
+        std::string szoveg = line;
+
+        // Skip possible empty line between comments
+        std::getline(file, line);
+
+        // Use your constructor
+        comments[count++] = new comment(nev, csillag, szoveg);
+    }
+
+    return comments;
+}
+
+
+
+void walkcomments() {
+
+    size_t count = 0;
+    size_t idx = 0;
+    comment** allcomments = read_comments(count); 
+    fajlkiolvas("commentsection.txt");    
+    bool kilepett = false;
+    econio_rawmode(); 
+    while (not(kilepett)) {
+
+        int key = econio_getch(); 
+        if (key == KEY_RIGHT) { if (idx >= count - 1) idx = 0; else idx++; }
+        if (key == KEY_LEFT) { if (idx <= 0) idx = count - 1; else idx--; }
+        allcomments[idx]->prnt();
+        if (key == KEY_ESCAPE) {
+
+            for (size_t i = 0; i < count; ++i) delete allcomments[i];
+            delete[] allcomments;
+            kilepett = true;
+
+        }
+
+    }
+    econio_normalmode();
+}
 
 
 
 
 
-void sizew(double sized) {   
+void sizew(double sized, bool smth = false) {   
 
     for (int i = 0; i < 50; i++) std::cout << "\n";
     fajlkiolvas("sizetop.txt");
@@ -861,7 +966,7 @@ void sizew(double sized) {
 }
 
 
-void sizel(double sized) {
+void sizel(double sized, bool smth = false) {
 
     for (int i = 0; i < 50; i++) std::cout << "\n";
     fajlkiolvas("sizelength.txt");
@@ -906,7 +1011,7 @@ void tablarajzol(Mezo* tabla, int width, int length, Cat cica) {
 
                 if (z == 0) { 
 
-                    if (j == 0) std::cout << i << " ";
+                    if (j == 0) std::cout << betuk[i] << " ";
                     if (cica.hol() == tabla[i * length + j]) cica.drawline();
                     else std::cout << tabla[i * length + j].drawline1(); 
 
@@ -969,13 +1074,21 @@ Mezo keresszomszed(Mezo* tabla, Mezo mezo, int xdiff, int ydiff, int length, int
 
 Mezo* Man::lep(Mezo* tabla, int width, int length) { 
 
+    std::string coor;
     bool lepett = false;
     while (not(lepett)) {
 
-        fajlkiolvas("box.txt");
+        std::cin >> coor; 
+        std::cout << "\n \n A beirt koordinata " << coor << "volt"; 
+        for (int i = 0; i < width * length; i++) {
 
+            std::cout << "\n a kovetkezo vizsgalt koordinata a " << tabla[i].getid() << "lesz ";
+            if (tabla[i].getid() == coor && tabla[i].getfree()) { tabla[i].stoned(); lepett = true; break; }
+
+        }
 
     }
+    return tabla; 
 
 }
 
@@ -1035,16 +1148,66 @@ Mezo* Cat::lep(Mezo* tabla, int width, int length) {
 }
 
 
+bool cicanemlephet(Cat cat, Mezo* tabla, int length, int width) {
+
+    Mezo invalid;
+    Mezo next;
+
+    for (int i = -1; i < 2; i++) {
+
+        for (int j = -1; j < 2; j++) { 
+
+            next = keresszomszed(tabla, cat.hol(), i, j, length, width);
+            if (next == invalid) continue;
+            else return false;
+
+        }
+
+    }
+
+    return true;
+}
+
+
 
 
 void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
 
-    while (true)
+    bool gameover = false;
+    while (not(gameover))
     {
         tabla = cat.lep(tabla, width, length); 
-        tablarajzol(tabla, width, length, cat);   
-    }
+        tablarajzol(tabla, width, length, cat); 
+        fajlkiolvas("box.txt");
+        std::cout << cat.hol().getid() << "\n";
+        tabla = man.lep(tabla, width, length);
+        tablarajzol(tabla, width, length, cat);
 
+
+        if (cat.hol().getside() == true) {
+
+            fajlkiolvas("gazdafucked.txt");
+            system("pause >nul"); 
+            fajlkiolvas("cicanyert.txt");    
+            system("pause >nul");
+            modositFelhasznalo("jatekos.txt", cat.getname(), 3, "NA");
+            gameover = true;
+
+        }
+
+
+        if (cicanemlephet(cat, tabla, width, length) == true) {
+
+            fajlkiolvas("cicasucked.txt");
+            system("pause >nul");
+            fajlkiolvas("gazdanyert.txt");
+            system("pause >nul");
+            modositFelhasznalo("jatekos.txt", man.getname(), 3, "NA"); 
+            gameover = true;
+
+        }
+    }
+    delete[] tabla; 
 }
 
 
@@ -1062,16 +1225,16 @@ Mezo* ujjatek() {
 
     bool shape = bipolar("shapesquare.txt", "shapepolygon.txt");
 
-    double length = leftright(5, 1, sizew, 5, 43);
-    double width = leftright(5, 1, sizel, 5, 18);
+    double length = leftright(5, 1, sizew, 5, 43, false);
+    double width = leftright(5, 1, sizel, 5, 18, false);
 
     std::cout << width << ", " << length;
 
-    Mezo* pontok = new Mezo[width*length]; 
+    Mezo* pontok = new Mezo[static_cast<int>(width)*static_cast<int>(length)]; 
 
     std::string szamok = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    for (int i = 0; i < width; i++)
+    for (int i = 0; i < static_cast<int>(width); i++)
     {
         for (int j = 0; j < length; j++) {
 
@@ -1079,22 +1242,22 @@ Mezo* ujjatek() {
             id += szamok[i]; 
             id += szamok[j];
             std::cout << "\n i = " << i << "\n j = " << j;
-            int idx = i * length + j; 
+            int idx = i * static_cast<int>(length) + j; 
             std::cout << "\n A kovetkezo az index: " << idx << "\n";
-            pontok[idx] = Mezo(i, j, id, false, true, false, true);  
+            if (idx >= 0 && idx < static_cast<int>(width) * static_cast<int>(length)) pontok[idx] = Mezo(i, j, id, false, true, false, true);
             //pontok[idx].get();  
 
         }
     }
 
-    int coor = static_cast<int>(width / 2) * length + static_cast<int>(length / 2);
+    int coor = static_cast<int>(width / 2) * static_cast<int>(length) + static_cast<int>(length / 2);
     std::cout << int(width / 2) << " * " << length << " + " << int(length / 2) << " = " << int((width / 2) * length) << " + " << int(length / 2) << "\n\n\n\n";
-    cat.merre(pontok[coor]);
+    if (coor >= 0 && coor < static_cast<int>(width) * static_cast<int>(length)) cat.merre(pontok[coor]);
     srand(static_cast<unsigned int>(time(0)));
 
-    for (int i = 0; i < width * length; i++) {
+    for (int i = 0; i < static_cast<int>(width) * static_cast<int>(length); i++) {
 
-        if (pontok[i].getx() == 0 || pontok[i].gety() == 0 || pontok[i].getx() == length - 1 || pontok[i].gety() == width - 1) pontok[i].sides();
+        if (pontok[i].getx() == 0 || pontok[i].gety() == 0 || pontok[i].getx() == static_cast<int>(width) - 1 || pontok[i].gety() == static_cast<int>(length) - 1) pontok[i].sides(); 
         int random = rand() % 10; 
         std::cout << random << "\n";
         if (random < 4 && not(cat.hol() == pontok[i])) pontok[i].stoned();
@@ -1104,10 +1267,10 @@ Mezo* ujjatek() {
 
 
 
-    std::cout << "\n \n \n \n \n \n \ \n"; 
-    tablarajzol(pontok, width, length, cat);  
+    std::cout << "\n \n \n \n \n \n \n \n"; 
+    tablarajzol(pontok, static_cast<int>(width), static_cast<int>(length), cat);  
 
-    jatsz(pontok, cat, man, length, width); 
+    jatsz(pontok, cat, man, static_cast<int>(length), static_cast<int>(width)); 
 
     
 
