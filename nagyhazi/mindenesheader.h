@@ -1056,6 +1056,7 @@ Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik) {
                 if (really) {
 
                     bool save = bipolar("returnyes.txt", "returnno.txt");
+                    if (save) tablament("nemkesz.txt", tabla, width, length, masik, *this);
 
                 }
             }
@@ -1119,6 +1120,7 @@ Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik) {
             if (really) {
 
                 bool save = bipolar("returnyes.txt", "returnno.txt");
+                if (save) tablament("nemkesz.txt", tabla, width, length, *this, masik);
 
             }
             break;
