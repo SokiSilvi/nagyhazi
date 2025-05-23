@@ -15,6 +15,7 @@ int main()
     //ertekel(); 
     //animate();
     //bejelentkezes();
+
     fajlkiolvas("line-arts.txt");
     system("pause >nul");
     //std::cout << "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012456789012345678901234567890123456789";
@@ -29,6 +30,7 @@ int main()
         int valasztas = arrowfind(2, 6, "menu.txt", 3);
 
         if (valasztas == 0) ujjatek(); 
+        if (valasztas == 1) fajlkiolvas("error.txt");
         if (valasztas == 3) walkcomments();
         if (valasztas == 4) ertekel();
         if (valasztas == 5) usermodosit();

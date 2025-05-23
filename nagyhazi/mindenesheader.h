@@ -7,6 +7,7 @@
 #include <thread>
 #include <chrono>
 #include <functional>
+#include <vector> 
 #include "econio.h"
 
 
@@ -43,9 +44,10 @@ public:
     std::string getid() { return id; }
     bool getfree() { return free; }
     bool getside() { return side; }
+    bool getstone() { return stone; }
 
     std::string drawline1() {
-        if (not real) return "   ";
+        if (not real) return "   "; 
         else {
             if (not stone) return "|  ";
             else return "|||";
@@ -58,172 +60,10 @@ public:
             else return "|||";
         }
     }
+
     bool operator==(Mezo masik) { return masik.getid() == this->getid(); }
-    virtual Mezo& toplefth() { throw "BHPG3H"; }
-    virtual Mezo& toprighth() { throw "BHPG3H"; }
-    virtual Mezo& toph() { throw "BHPG3H"; }
-    virtual Mezo& bottomlefth() { throw "BHPG3H"; }
-    virtual Mezo& bottomrighth() { throw "BHPG3H"; }
-    virtual Mezo& bottomh() { throw "BHPG3H"; }
-    virtual Mezo& lefth() { throw "BHPG3H"; }
-    virtual Mezo& righth() { throw "BHPG3H"; }
+
 };
-
-class Middle : public Mezo {
-
-    Mezo& topleft, topright, top, bottomleft, bottomright, bottom, left, right;
-
-public:
-
-    Middle(Mezo mezo, Mezo topleft, Mezo topright, Mezo top, Mezo bottomleft, Mezo bottomright, Mezo bottom, Mezo left, Mezo right) : Mezo(mezo), topleft(topleft), topright(topright), top(top), bottomleft(bottomleft), bottomright(bottomright), bottom(bottom), left(left), right(right) {}
-    Mezo& toplefth() { return topleft; }
-    Mezo& toprighth() { return topright; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { return bottomleft; }
-    Mezo& bottomrighth() { return bottomright; }
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { return left; }
-    Mezo& righth() { return right; }
-};
-
-
-
-class TopLeft : public Mezo {
-
-    Mezo& bottomright, bottom, right;
-
-public:
-
-    TopLeft(Mezo mezo, Mezo bottomright, Mezo bottom, Mezo right) : Mezo(mezo), bottomright(bottomright), bottom(bottom), right(right) {}
-    Mezo& toplefth() { throw "BHPG3H"; }
-    Mezo& toprighth() { throw "BHPG3H"; }
-    Mezo& toph() { throw "BHPG3H"; }
-    Mezo& bottomlefth() { throw "BHPG3H"; }
-    Mezo& bottomrighth() { return bottomright; } 
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { throw "BHPG3H"; }
-    Mezo& righth() { return right; }
-};
-
-class TopRight : public Mezo {
-
-    Mezo& bottomleft, bottom, left;
-
-public:
-
-    TopRight(Mezo mezo, Mezo topleft, Mezo top, Mezo left) : Mezo(mezo), bottomleft(topleft), bottom(top), left(left) {} 
-    Mezo& toplefth() { throw "BHPG3H"; }
-    Mezo& toprighth() { throw "BHPG3H"; }
-    Mezo& toph() { throw "BHPG3H"; }
-    Mezo& bottomlefth() { { return bottomleft; } }
-    Mezo& bottomrighth() { throw "BHPG3H"; }
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { return left; }
-    Mezo& righth() { throw "BHPG3H"; }
-};
-
-class BottomLeft : public Mezo {
-
-    Mezo& topright, top, right;
-
-public:
-
-    BottomLeft(Mezo mezo, Mezo topright, Mezo top, Mezo right) : Mezo(mezo), topright(topright), top(top), right(right) {} 
-    Mezo& toplefth() { throw "BHPG3H"; }
-    Mezo& toprighth() { return topright; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { throw "BHPG3H"; }
-    Mezo& bottomrighth() { throw "BHPG3H"; }
-    Mezo& bottomh() { throw "BHPG3H"; }
-    Mezo& lefth() { throw "BHPG3H"; }
-    Mezo& righth() { return right; }
-};
-
-class BottomRight : public Mezo {
-
-    Mezo& topleft, top, left;
-
-public:
-
-    BottomRight(Mezo mezo, Mezo topleft, Mezo top, Mezo left) : Mezo(mezo), topleft(topleft), top(top), left(left) {}
-    Mezo& toplefth() { return topleft; }
-    Mezo& toprighth() { throw "BHPG3H"; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { throw "BHPG3H"; }
-    Mezo& bottomrighth() { throw "BHPG3H"; }
-    Mezo& bottomh() { throw "BHPG3H"; }
-    Mezo& lefth() { return top; }
-    Mezo& righth() { throw "BHPG3H"; }
-};
-
-class Top : public Mezo {
-
-    Mezo& bottomleft, bottomright, bottom, left, right;
-
-public:
-
-    Top(Mezo(mezo), Mezo bottomleft, Mezo bottomright, Mezo bottom, Mezo left, Mezo right) : Mezo(mezo), bottomleft(bottomleft), bottom(bottom), bottomright(bottomright), left(left), right(right) {}
-    Mezo& toplefth() { throw "BHPG3H"; }
-    Mezo& toprighth() { throw "BHPG3H"; }
-    Mezo& toph() { throw "BHPG3H"; }
-    Mezo& bottomlefth() { return bottomleft; }
-    Mezo& bottomrighth() { return bottomright; }
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { return left; }
-    Mezo& righth() { return right; }
-};
-
-class Bottom : public Mezo {
-
-    Mezo& topleft, topright, top, left, right;
-
-public:
-
-    Bottom(Mezo mezo, Mezo topleft, Mezo topright, Mezo top, Mezo right, Mezo left) : Mezo(mezo), topleft(topleft), topright(topright), top(top), left(left), right(right) {}
-    Mezo& toplefth() { return topleft; }
-    Mezo& toprighth() { return topright; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { throw "BHPG3H"; }
-    Mezo& bottomrighth() { throw "BHPG3H"; }
-    Mezo& bottomh() { throw "BHPG3H"; }
-    Mezo& lefth() { return left; }
-    Mezo& righth() { return right; }
-};
-
-class Right : public Mezo {
-
-    Mezo& topleft, top, bottomleft, bottom, left;
-
-public:
-
-    Right(Mezo mezo, Mezo topleft, Mezo top, Mezo bottomleft, Mezo bottom, Mezo left) : Mezo(mezo), topleft(topleft), top(top), bottomleft(bottomleft), bottom(bottom), left(left) {}
-    Mezo& toplefth() { return topleft; }
-    Mezo& toprighth() { throw "BHPG3H"; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { return bottomleft; }
-    Mezo& bottomrighth() { throw "BHPG3H"; }
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { return left; }
-    Mezo& righth() { throw "BHPG3H"; }
-};
-
-class Left : public Mezo {
-
-    Mezo& topright, top, bottomright, bottom, right;
-
-public:
-
-    Left(Mezo mezo, Mezo topright, Mezo top, Mezo bottomright, Mezo bottom, Mezo right) : Mezo(mezo), topright(topright), top(top), bottomright(bottomright), bottom(bottom), right(right) {}
-    Mezo& toplefth() { throw "BHPG3H"; }
-    Mezo& toprighth() { return topright; }
-    Mezo& toph() { return top; }
-    Mezo& bottomlefth() { throw "BHPG3H"; }
-    Mezo& bottomrighth() { return bottomright; }
-    Mezo& bottomh() { return bottom; }
-    Mezo& lefth() { throw "BHPG3H"; }
-    Mezo& righth() { return right; }
-};
-
 
 
 
@@ -246,7 +86,7 @@ public:
     void setpass(std::string pass) { password = pass; }
     std::string getname() { return nickname; }
     std::string getmail() { return email; }
-    virtual Mezo* lep(Mezo* tabla, int length, int width) { return tabla; }
+    virtual Mezo* lep(Mezo* tabla, int length, int width, User& masik) { return tabla; } 
 
 };
 
@@ -257,7 +97,7 @@ public:
     Man(std::string email, std::string nickname, std::string password) : User(email, nickname, password) {}
     Man(User user) : User(user) {}
     Man() : User() {}
-    Mezo* lep(Mezo* tabla, int length, int width);
+    Mezo* lep(Mezo* tabla, int length, int width, User& masik); 
 
 };
 
@@ -272,7 +112,7 @@ public:
     Cat(User user) : User(user), where(-1, -1, "NA", 0, 0, 0, 0) {}
     Cat() : User(), where(-1, -1, "NA", 0, 0, 0, 0) {}
     Mezo hol() { return where; }
-    Mezo* lep(Mezo* tabla, int length, int width); 
+    Mezo* lep(Mezo* tabla, int length, int width, User& masik); 
     void merre(Mezo wheres) { where = wheres; }
     void drawline() { std::cout << "|OO"; }   
 
@@ -295,6 +135,21 @@ public:
 };
 
 
+class BeolvasottTabla {
+
+    Mezo* tabla;
+    Cat cica; 
+    Man man; 
+    int width;
+    int length;
+
+public:
+
+    BeolvasottTabla(Mezo* tabla, User cica, User man, int width, int length) : tabla(tabla), cica(cica), man(man), width(width), length(length) {}
+    void prnt();
+
+};
+
 
 
 
@@ -311,6 +166,21 @@ void fajlkiolvas(std::string fajlnev) {
     fajl.close();
 
 }
+
+
+
+int sajatatoi(char ch) {
+
+    std::string betuk = "0123456789abcdefghijklmnopqrstuvdxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (int i = 0; i < betuk.size(); i++) {
+
+        if (betuk[i] == ch) return i; 
+
+    }
+    return -1;
+}
+
+
 
 void osszesito() {
 
@@ -776,7 +646,7 @@ User bejelentkezes() {
         }
 
     }
-    return User("", user, pass);
+    return User(keresEmailCim("jatekos.txt", user), user, pass); 
 }
 
 
@@ -918,7 +788,7 @@ comment** read_comments(size_t& count, const std::string& filename = "velemenyek
         std::getline(file, line);
 
         // Use your constructor
-        comments[count++] = new comment(nev, csillag, szoveg);
+        if(count < max_comments - 2) comments[count++] = new comment(nev, csillag, szoveg);  
     }
 
     return comments;
@@ -1070,19 +940,126 @@ Mezo keresszomszed(Mezo* tabla, Mezo mezo, int xdiff, int ydiff, int length, int
 
 
 
+void tablament(std::string fajlnev, Mezo* tabla, int width, int length, Cat cat, Man man) {
+
+    std::fstream file_example(fajlnev, std::ofstream::out | std::ofstream::app); 
+    file_example << "Cat was " << cat.getname() << "\n" << "Man was " << man.getname() << "\n" << "Width of table: " << width << "\n" << "Height of table: " << length << "\n" << "Fields: (id | stone | side | free)";
+    for (int i = 0; i < width * length; i++) file_example << "\n" << tabla[i].getid() << tabla[i].getstone() << tabla[i].getside() << tabla[i].getfree();
+    file_example << "\n\n";
+
+}
 
 
-Mezo* Man::lep(Mezo* tabla, int width, int length) { 
+
+
+
+std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) { 
+
+    std::ifstream file(fajlnev);
+    std::string user1;
+    std::string user2;
+    std::string sor;
+    int width = 0; int height = 0;
+    Mezo* tabla = new Mezo[10000]; 
+    std::vector<BeolvasottTabla> mentettek;
+    std::string szamok = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+    
+    while (std::getline(file, sor)) {
+
+        if (sor.rfind("Cat was ", 0) == 0) {
+
+            user1 = sor.substr(7);
+        }
+        if (sor.rfind("Man was ", 0) == 0) {
+
+            user2 = sor.substr(7);
+        }
+        if (sor.rfind("Width of table: ", 0) == 0) {
+
+            std::istringstream iss(sor); 
+            iss >> width; 
+        }
+        if (sor.rfind("Height of table: ", 0) == 0) { 
+
+            std::istringstream iss(sor); 
+            iss >> height;  
+        }
+        if (sor.rfind("Fields:")) {
+
+            for (size_t i = 0; i < width * height; i++) {
+
+                std::getline(file, sor);
+                std::string id;
+                id += sor[0];
+                id += sor[1];
+                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2])); 
+
+            }
+            for (size_t i = width * height; i < 10000; i++) tabla[i] = Mezo();
+
+        }
+        mentettek.push_back(BeolvasottTabla(tabla, User(keresEmailCim("jatekos.txt", user1), user1, ""), User(keresEmailCim("jatekos.txt", user2), user2, ""), width, height)); 
+    }
+    return mentettek; 
+}
+
+
+
+
+void BeolvasottTabla::prnt() {
+
+    std::cout << "The cat was " << cica.getname() << "\n" << "The man was " << man.getname() << "\n\n";
+    tablarajzol(tabla, width, length, cica); 
+
+}
+
+
+
+bool savechoice(User embi1, User embi2) {
+
+    std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Please wait...";
+    std::string code1 = mail(embi1.getmail(), "You or your partner seem to have chosen to quit the game. If you agree, your code is ");
+    std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Please wait...";
+    std::string code2 = mail(embi2.getmail(), "You or your partner seem to have chosen to quit the game. If you agree, your code is ");
+    std::cout << "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n Please wait...";
+    
+    std::string inputcode1;
+    std::string inputcode2;
+    for (int i = 0; i < 50; i++) std::cout << "\n";
+    fajlkiolvas("save.txt");
+    std::cout << "The first code: ";
+    std::cin >> inputcode1;
+    for (int i = 0; i < 50; i++) std::cout << "\n";
+    fajlkiolvas("save.txt");
+    std::cout << "The other code: ";
+    std::cin >> inputcode2;
+    if (inputcode1 == inputcode2 || (inputcode1 != code1 && inputcode1 != code2) || (inputcode2 != code1 && inputcode2 != code2)) return false; 
+    return true;
+
+}
+
+
+Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik) {  
 
     std::string coor;
     bool lepett = false;
     while (not(lepett)) {
 
-        std::cin >> coor; 
-        std::cout << "\n \n A beirt koordinata " << coor << "volt"; 
+        //std::cin >> coor; 
+        //std::cout << "\n \n A beirt koordinata " << coor << "volt"; 
         for (int i = 0; i < width * length; i++) {
 
-            std::cout << "\n a kovetkezo vizsgalt koordinata a " << tabla[i].getid() << "lesz ";
+            //std::cout << "\n a kovetkezo vizsgalt koordinata a " << tabla[i].getid() << "lesz ";
+            if (coor == "F11") {
+                bool really = savechoice(*this, masik);
+                if (really) {
+
+                    bool save = bipolar("returnyes.txt", "returnno.txt");
+
+                }
+            }
+            break;
             if (tabla[i].getid() == coor && tabla[i].getfree()) { tabla[i].stoned(); lepett = true; break; }
 
         }
@@ -1117,7 +1094,7 @@ Mezo* tableuncat(Mezo* tabla, int width, int length, Mezo now, Mezo next) {
 
 
 
-Mezo* Cat::lep(Mezo* tabla, int width, int length) { 
+Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik) { 
 
     bool lepett = false;
     fajlkiolvas("controlcat.txt");
@@ -1136,6 +1113,17 @@ Mezo* Cat::lep(Mezo* tabla, int width, int length) {
         case(KEY_CTRLUP): { next = keresszomszed(tabla, this->where, -1, -1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
         case(KEY_CTRLLEFT): { next = keresszomszed(tabla, this->where, 1, -1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
         case((KEY_CTRLRIGHT)): { next = keresszomszed(tabla, this->where, -1, 1, length, width); lepett = catstepcorrect(next); tabla = tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; } 
+        case(KEY_CTRLDELETE): {    
+            
+            bool really = savechoice(*this, masik); 
+            if (really) {
+
+                bool save = bipolar("returnyes.txt", "returnno.txt");
+
+            }
+            break;
+        
+        }
         default:
             break;
         }
@@ -1176,11 +1164,11 @@ void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
     bool gameover = false;
     while (not(gameover))
     {
-        tabla = cat.lep(tabla, width, length); 
+        tabla = cat.lep(tabla, width, length, man);  
         tablarajzol(tabla, width, length, cat); 
         fajlkiolvas("box.txt");
         std::cout << cat.hol().getid() << "\n";
-        tabla = man.lep(tabla, width, length);
+        tabla = man.lep(tabla, width, length, cat); 
         tablarajzol(tabla, width, length, cat);
 
 
@@ -1207,6 +1195,11 @@ void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
 
         }
     }
+
+
+    tablament("finished.txt", tabla, width, length, cat, man);
+
+
     delete[] tabla; 
 }
 
@@ -1215,67 +1208,70 @@ void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
 
 
 
-Mezo* ujjatek() { 
-
+Mezo* ujjatek() {
     Man man;
-    Cat cat; 
+    Cat cat;
 
-    cat = szemelyek("catplaersinin.txt", "catplaerregist.txt", "cica-line-art.txt", "oswald.txt"); 
+    cat = szemelyek("catplaersinin.txt", "catplaerregist.txt", "cica-line-art.txt", "oswald.txt");
     man = szemelyek("manplayersignin.txt", "manplayerregist.txt", "gazda-line-art.txt", "spencer.txt");
 
     bool shape = bipolar("shapesquare.txt", "shapepolygon.txt");
 
-    double length = leftright(5, 1, sizew, 5, 43, false);
-    double width = leftright(5, 1, sizel, 5, 18, false);
+    int length = 0;
+    int width = 0;
+    while (length < 5 || width < 5) {
+        length = static_cast<int>(leftright(8, 1, sizew, 8, 43, false));
+        width = static_cast<int>(leftright(8, 1, sizel, 8, 18, false));
+    }
 
     std::cout << width << ", " << length;
 
-    Mezo* pontok = new Mezo[static_cast<int>(width)*static_cast<int>(length)]; 
+    int maxIndex = width * length;
+    if (width <= 0 || length <= 0) return nullptr; // Defensive: never allocate zero or negative
+
+    Mezo* pontok = new Mezo[maxIndex];
 
     std::string szamok = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-    for (int i = 0; i < static_cast<int>(width); i++)
-    {
+    for (int i = 0; i < width; i++) {
         for (int j = 0; j < length; j++) {
-
             std::string id;
-            id += szamok[i]; 
+            id += szamok[i];
             id += szamok[j];
-            std::cout << "\n i = " << i << "\n j = " << j;
-            int idx = i * static_cast<int>(length) + j; 
-            std::cout << "\n A kovetkezo az index: " << idx << "\n";
-            if (idx >= 0 && idx < static_cast<int>(width) * static_cast<int>(length)) pontok[idx] = Mezo(i, j, id, false, true, false, true);
-            //pontok[idx].get();  
-
+            int idx = i * length + j;
+            if (idx >= 0 && idx < maxIndex) {
+                pontok[idx] = Mezo(i, j, id, false, true, false, true);
+            }
         }
     }
 
-    int coor = static_cast<int>(width / 2) * static_cast<int>(length) + static_cast<int>(length / 2);
-    std::cout << int(width / 2) << " * " << length << " + " << int(length / 2) << " = " << int((width / 2) * length) << " + " << int(length / 2) << "\n\n\n\n";
-    if (coor >= 0 && coor < static_cast<int>(width) * static_cast<int>(length)) cat.merre(pontok[coor]);
+    int coor = (width / 2) * length + (length / 2);
+    if (coor >= 0 && coor < maxIndex) cat.merre(pontok[coor]);
     srand(static_cast<unsigned int>(time(0)));
 
-    for (int i = 0; i < static_cast<int>(width) * static_cast<int>(length); i++) {
+    if (pontok != nullptr) {
+        for (int i = 0; i < maxIndex; i++) { 
+            // Only access pontok[i] if i is in range
+            if (i >= 0 && i < maxIndex) { 
+                if (pontok[i].getx() == 0) pontok[i].sides(); 
+                if (pontok[i].gety() == 0) pontok[i].sides(); 
+                if (pontok[i].getx() == width - 1) pontok[i].sides(); 
+                if (pontok[i].gety() == length - 1) pontok[i].sides(); 
 
-        if (pontok[i].getx() == 0 || pontok[i].gety() == 0 || pontok[i].getx() == static_cast<int>(width) - 1 || pontok[i].gety() == static_cast<int>(length) - 1) pontok[i].sides(); 
-        int random = rand() % 10; 
-        std::cout << random << "\n";
-        if (random < 4 && not(cat.hol() == pontok[i])) pontok[i].stoned();
-
+                int random = rand() % 10; 
+                if (random < 4 && !(cat.hol() == pontok[i])) { 
+                    pontok[i].stoned(); 
+                }
+            }
+        }
     }
 
-
-
-
-    std::cout << "\n \n \n \n \n \n \n \n"; 
-    tablarajzol(pontok, static_cast<int>(width), static_cast<int>(length), cat);  
-
-    jatsz(pontok, cat, man, static_cast<int>(length), static_cast<int>(width)); 
-
-    
-
-    return pontok;  
+    std::cout << "\n \n \n \n \n \n \n \n";
+    tablarajzol(pontok, width, length, cat); 
+    jatsz(pontok, cat, man, length, width);
+    return pontok;
 }
+
 
 
 

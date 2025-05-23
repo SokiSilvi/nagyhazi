@@ -1,0 +1,8 @@
+   _______
+  /       \
+ / __   __ \   
+| <__>-<__> | You both have to confirm you want to quit.
+|   ˛/      | We sent you both an email to verify your choice
+|    ˇ__    |  _________________________________________________
+ \    \_|  /  |                                                 |
+  \_______/   | 
