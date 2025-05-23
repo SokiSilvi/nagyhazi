@@ -811,7 +811,7 @@ void walkcomments() {
         if (key == KEY_LEFT) { if (idx <= 0) idx = count - 1; else idx--; }
         allcomments[idx]->prnt();
         if (key == KEY_ESCAPE) {
-
+             
             for (size_t i = 0; i < count; ++i) delete allcomments[i];
             delete[] allcomments;
             kilepett = true;
