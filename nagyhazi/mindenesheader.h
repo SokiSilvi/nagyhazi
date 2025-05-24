@@ -86,7 +86,7 @@ public:
     void setpass(std::string pass) { password = pass; }
     std::string getname() { return nickname; }
     std::string getmail() { return email; }
-    virtual Mezo* lep(Mezo* tabla, int length, int width, User& masik) { return tabla; } 
+    virtual Mezo* lep(Mezo* tabla, int length, int width, User& masik, bool& gameover) { return tabla; } 
 
 };
 
@@ -97,7 +97,7 @@ public:
     Man(std::string email, std::string nickname, std::string password) : User(email, nickname, password) {}
     Man(User user) : User(user) {}
     Man() : User() {}
-    Mezo* lep(Mezo* tabla, int length, int width, User& masik); 
+    Mezo* lep(Mezo* tabla, int length, int width, User& masik, bool& gameover);  
 
 };
 
@@ -112,16 +112,26 @@ public:
     Cat(User user) : User(user), where(-1, -1, "NA", 0, 0, 0, 0) {}
     Cat() : User(), where(-1, -1, "NA", 0, 0, 0, 0) {}
     Mezo hol() { return where; }
-    Mezo* lep(Mezo* tabla, int length, int width, User& masik); 
+    Mezo* lep(Mezo* tabla, int length, int width, User& masik, bool& gameover);  
     void merre(Mezo wheres) { where = wheres; }
     void drawline() { std::cout << "|OO"; }   
 
 };
 
 
+class Kiolvasando {
+
+    int tag; 
+
+public:
+
+    Kiolvasando() : tag(1) {}
+    virtual void prnt() {}
+
+};
 
 
-class comment {
+class comment : public Kiolvasando { 
 
     std::string nev;
     double star;
@@ -135,7 +145,7 @@ public:
 };
 
 
-class BeolvasottTabla {
+class BeolvasottTabla : public Kiolvasando { 
 
     Mezo* tabla;
     Cat cica; 
@@ -147,6 +157,8 @@ public:
 
     BeolvasottTabla(Mezo* tabla, User cica, User man, int width, int length) : tabla(tabla), cica(cica), man(man), width(width), length(length) {}
     void prnt();
+    Cat getcica() { return cica; }
+    Man getman() { return man; }
 
 };
 
@@ -796,11 +808,9 @@ comment** read_comments(size_t& count, const std::string& filename = "velemenyek
 
 
 
-void walkcomments() {
+void walkcomments(Kiolvasando** allcomments, int count) {  
 
-    size_t count = 0;
     size_t idx = 0;
-    comment** allcomments = read_comments(count); 
     fajlkiolvas("commentsection.txt");    
     bool kilepett = false;
     econio_rawmode(); 
@@ -969,32 +979,45 @@ std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
 
         if (sor.rfind("Cat was ", 0) == 0) {
 
-            user1 = sor.substr(7);
+            user1 = sor.substr(8);
+            std::cout << "User1:" << user1 << std::endl; 
         }
         if (sor.rfind("Man was ", 0) == 0) {
 
-            user2 = sor.substr(7);
+            user2 = sor.substr(8);
+            std::cout << "User2:" << user2 << std::endl; 
         }
         if (sor.rfind("Width of table: ", 0) == 0) {
 
-            std::istringstream iss(sor); 
-            iss >> width; 
+            sor.substr(17);
+            std::cout << sor;
+            //std::istringstream iss(sor);
+            width = std::stoi(sor.substr(sor.find(':') + 1));
+            std::cout << "Width:" << width << std::endl; 
+
         }
         if (sor.rfind("Height of table: ", 0) == 0) { 
 
-            std::istringstream iss(sor); 
-            iss >> height;  
+            sor.substr(18);
+            std::cout << sor; 
+            //std::istringstream iss(sor);
+            height = std::stoi(sor.substr(sor.find(':') + 1)); 
+            std::cout << "Height:" << height << std::endl; 
+
         }
         if (sor.rfind("Fields:")) {
 
+            std::getline(file, sor); 
             for (size_t i = 0; i < width * height; i++) {
 
+                std::cout << "\n" << i << std::endl; 
                 std::getline(file, sor);
+                std::cout << sor << "asd";
                 std::string id;
                 id += sor[0];
                 id += sor[1];
-                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2])); 
-
+                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2]));  
+                tabla[i].drawline1();
             }
             for (size_t i = width * height; i < 10000; i++) tabla[i] = Mezo();
 
@@ -1004,6 +1027,41 @@ std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
     return mentettek; 
 }
 
+
+
+
+
+BeolvasottTabla** find_tables_by_username(const std::string& username, size_t& found_count, const std::string& filename = "finished.txt") {
+    std::vector<BeolvasottTabla> all_tables = tablakiolvas(filename);
+    std::vector<BeolvasottTabla*> matches;
+
+    for (auto& table : all_tables) {
+        // Check if either player's name matches the username
+        if (table.getcica().getname() == username || table.getman().getname() == username) {
+            matches.push_back(&table);
+        }
+    }
+
+    found_count = matches.size();
+    if (found_count == 0) return nullptr;
+
+    // Allocate array for the pointers
+    BeolvasottTabla** result = new BeolvasottTabla * [found_count];
+    for (size_t i = 0; i < found_count; ++i) {
+        result[i] = matches[i];
+    }
+    return result;
+}
+
+
+
+void tablakinez() {
+
+    User user = bejelentkezes();
+    size_t count = 0;
+    BeolvasottTabla** tables = find_tables_by_username(user.getname(), count); 
+    walkcomments(reinterpret_cast<Kiolvasando**>(tables), count);
+}
 
 
 
@@ -1040,27 +1098,31 @@ bool savechoice(User embi1, User embi2) {
 }
 
 
-Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik) {  
+Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik, bool& gameover) {   
 
     std::string coor;
     bool lepett = false;
     while (not(lepett)) {
 
-        //std::cin >> coor; 
+        std::cin >> coor;  
+
+        if (coor == "F11") {
+            bool really = savechoice(*this, masik);
+            if (really) {
+
+                bool save = bipolar("returnno.txt", "returnyes.txt");
+                if (save) tablament("nemkesz.txt", tabla, width, length, masik, *this);
+                gameover = true;
+
+            }
+            lepett = true;
+            break;
+        }
+
         //std::cout << "\n \n A beirt koordinata " << coor << "volt"; 
         for (int i = 0; i < width * length; i++) {
 
             //std::cout << "\n a kovetkezo vizsgalt koordinata a " << tabla[i].getid() << "lesz ";
-            if (coor == "F11") {
-                bool really = savechoice(*this, masik);
-                if (really) {
-
-                    bool save = bipolar("returnyes.txt", "returnno.txt");
-                    if (save) tablament("nemkesz.txt", tabla, width, length, masik, *this);
-
-                }
-            }
-            break;
             if (tabla[i].getid() == coor && tabla[i].getfree()) { tabla[i].stoned(); lepett = true; break; }
 
         }
@@ -1095,7 +1157,7 @@ Mezo* tableuncat(Mezo* tabla, int width, int length, Mezo now, Mezo next) {
 
 
 
-Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik) { 
+Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik, bool& gameover) {  
 
     bool lepett = false;
     fajlkiolvas("controlcat.txt");
@@ -1119,8 +1181,10 @@ Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik) {
             bool really = savechoice(*this, masik); 
             if (really) {
 
-                bool save = bipolar("returnyes.txt", "returnno.txt");
+                lepett = true;
+                bool save = bipolar("returnno.txt", "returnyes.txt");
                 if (save) tablament("nemkesz.txt", tabla, width, length, *this, masik);
+                gameover = true;
 
             }
             break;
@@ -1166,11 +1230,12 @@ void jatsz(Mezo* tabla, Cat cat, Man man, int length, int width) {
     bool gameover = false;
     while (not(gameover))
     {
-        tabla = cat.lep(tabla, width, length, man);  
+        tabla = cat.lep(tabla, width, length, man, gameover);   
+        if (gameover) { break; }
         tablarajzol(tabla, width, length, cat); 
         fajlkiolvas("box.txt");
         std::cout << cat.hol().getid() << "\n";
-        tabla = man.lep(tabla, width, length, cat); 
+        tabla = man.lep(tabla, width, length, cat, gameover);  
         tablarajzol(tabla, width, length, cat);
 
 
