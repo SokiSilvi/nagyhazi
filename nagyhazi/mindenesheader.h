@@ -990,6 +990,7 @@ std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
         if (sor.rfind("Width of table: ", 0) == 0) {
 
             std::istringstream iss(sor); 
+            sor.substr(12);
             iss >> width; 
             std::cout << "Width:" << width << std::endl; 
 
