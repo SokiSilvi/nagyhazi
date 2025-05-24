@@ -1003,7 +1003,7 @@ std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
         }
         if (sor.rfind("Fields:")) {
 
-            for (size_t i = 0; i < width * height; i++) {
+            for (size_t i = 0; i < width * height; i++) { 
 
                 std::getline(file, sor);
                 std::string id;
