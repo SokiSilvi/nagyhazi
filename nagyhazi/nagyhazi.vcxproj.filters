@@ -21,18 +21,12 @@
     <ClCompile Include="econio.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="osztalyok.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mindenesheader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="econio.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="osztalyok.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

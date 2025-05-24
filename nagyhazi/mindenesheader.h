@@ -989,29 +989,35 @@ std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
         }
         if (sor.rfind("Width of table: ", 0) == 0) {
 
-            std::istringstream iss(sor); 
-            sor.substr(12);
-            iss >> width; 
+            sor.substr(17);
+            std::cout << sor;
+            //std::istringstream iss(sor);
+            width = std::stoi(sor.substr(sor.find(':') + 1));
             std::cout << "Width:" << width << std::endl; 
 
         }
         if (sor.rfind("Height of table: ", 0) == 0) { 
 
-            std::istringstream iss(sor); 
-            iss >> height;  
+            sor.substr(18);
+            std::cout << sor; 
+            //std::istringstream iss(sor);
+            height = std::stoi(sor.substr(sor.find(':') + 1)); 
             std::cout << "Height:" << height << std::endl; 
 
         }
         if (sor.rfind("Fields:")) {
 
-            for (size_t i = 0; i < width * height; i++) { 
+            std::getline(file, sor); 
+            for (size_t i = 0; i < width * height; i++) {
 
+                std::cout << "\n" << i << std::endl; 
                 std::getline(file, sor);
+                std::cout << sor << "asd";
                 std::string id;
                 id += sor[0];
                 id += sor[1];
-                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2])); 
-
+                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2]));  
+                tabla[i].drawline1();
             }
             for (size_t i = width * height; i < 10000; i++) tabla[i] = Mezo();
 

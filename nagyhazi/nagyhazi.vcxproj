@@ -129,12 +129,10 @@
   <ItemGroup>
     <ClCompile Include="econio.cpp" />
     <ClCompile Include="nagyhazi.cpp" />
-    <ClCompile Include="osztalyok.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="econio.h" />
     <ClInclude Include="mindenesheader.h" />
-    <ClInclude Include="osztalyok.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
