@@ -4,6 +4,10 @@
 #include "mindenesheader.h"
 
 
+User::~User() {}
+Man::~Man() {}
+Cat::~Cat() {}
+
 
 Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik, bool& gameover) {
 
