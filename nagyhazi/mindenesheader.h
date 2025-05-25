@@ -560,7 +560,7 @@ int verifymail(std::string email, int counter, std::string body) {
         if (key == "abc") {
 
             std::cout << "Ooops.. wrong email.. Try again!";
-            counter = 0;
+            counter = 1;
 
         }
 
@@ -754,7 +754,7 @@ void comment::prnt() {
     for (size_t i = 0; i < nev.size() + 2; i++) std::cout << "_";
     csillag(star, false);
     std::cout << szoveg;  
-    fajlkiolvas("commentsection.txt");
+    //fajlkiolvas("commentsection.txt");
     for (int i = 0; i < 100; i++) std::cout << "~";
 
 }
@@ -819,7 +819,14 @@ void walkcomments(Kiolvasando** allcomments, int count) {
         int key = econio_getch(); 
         if (key == KEY_RIGHT) { if (idx >= count - 1) idx = 0; else idx++; }
         if (key == KEY_LEFT) { if (idx <= 0) idx = count - 1; else idx--; }
-        allcomments[idx]->prnt();
+        if (allcomments[idx] != nullptr) {
+            allcomments[idx]->prnt();
+            fajlkiolvas("commentsection.txt");
+        }
+        else {
+            std::cout << "nullptr";
+        }
+
         if (key == KEY_ESCAPE) {
              
             for (size_t i = 0; i < count; ++i) delete allcomments[i];
@@ -963,89 +970,70 @@ void tablament(std::string fajlnev, Mezo* tabla, int width, int length, Cat cat,
 
 
 
-std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) { 
-
+std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
     std::ifstream file(fajlnev);
-    std::string user1;
-    std::string user2;
-    std::string sor;
-    int width = 0; int height = 0;
-    Mezo* tabla = new Mezo[10000]; 
     std::vector<BeolvasottTabla> mentettek;
-    std::string szamok = "0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    std::string sor, user1, user2;
+    int width = 0, height = 0;
 
-    
     while (std::getline(file, sor)) {
-
         if (sor.rfind("Cat was ", 0) == 0) {
-
             user1 = sor.substr(8);
-            std::cout << "User1:" << user1 << std::endl; 
-        }
-        if (sor.rfind("Man was ", 0) == 0) {
-
+        } else if (sor.rfind("Man was ", 0) == 0) {
             user2 = sor.substr(8);
-            std::cout << "User2:" << user2 << std::endl; 
-        }
-        if (sor.rfind("Width of table: ", 0) == 0) {
-
-            sor.substr(17);
-            std::cout << sor;
-            //std::istringstream iss(sor);
+        } else if (sor.rfind("Width of table: ", 0) == 0) {
             width = std::stoi(sor.substr(sor.find(':') + 1));
-            std::cout << "Width:" << width << std::endl; 
-
-        }
-        if (sor.rfind("Height of table: ", 0) == 0) { 
-
-            sor.substr(18);
-            std::cout << sor; 
-            //std::istringstream iss(sor);
-            height = std::stoi(sor.substr(sor.find(':') + 1)); 
-            std::cout << "Height:" << height << std::endl; 
-
-        }
-        if (sor.rfind("Fields:")) {
-
-            std::getline(file, sor); 
-            for (size_t i = 0; i < width * height; i++) {
-
-                std::cout << "\n" << i << std::endl; 
-                std::getline(file, sor);
-                std::cout << sor << "asd";
-                std::string id;
-                id += sor[0];
-                id += sor[1];
-                tabla[i] = Mezo(sajatatoi(sor[1]), sajatatoi(sor[0]), id, sajatatoi(sor[2]), 1, sajatatoi(sor[3]), sajatatoi(sor[2]));  
-                tabla[i].drawline1();
+        } else if (sor.rfind("Height of table: ", 0) == 0) {
+            height = std::stoi(sor.substr(sor.find(':') + 1));
+        } else if (sor.rfind("Fields:", 0) == 0) {
+            // Read the board
+            Mezo* tabla = new Mezo[width * height];
+            User users(keresEmailCim("jatekos.txt", user1), user1, "");    
+            Cat macs = users; 
+            User man(keresEmailCim("jatekos.txt", user2), user2, "");
+            for (int i = 0; i < width * height; ++i) {
+                //std::cout << i << std::endl; 
+                if (!std::getline(file, sor)) break;
+                if (sor.size() < 5) continue; // Defensive
+                std::string id = sor.substr(0, 2);
+                tabla[i] = Mezo(
+                    sajatatoi(sor[1]), // x
+                    sajatatoi(sor[0]), // y
+                    id,
+                    sajatatoi(sor[2]), // stone
+                    1,                 // real
+                    sajatatoi(sor[3]), // side
+                    sajatatoi(sor[4])  // free 
+                );
+                std::cout << sajatatoi(sor[2]) << sajatatoi(sor[4]) << std::endl; 
+                if (sajatatoi(sor[2]) == sajatatoi(sor[4])) macs.merre(tabla[i]);
             }
-            for (size_t i = width * height; i < 10000; i++) tabla[i] = Mezo();
-
-        }
-        mentettek.push_back(BeolvasottTabla(tabla, User(keresEmailCim("jatekos.txt", user1), user1, ""), User(keresEmailCim("jatekos.txt", user2), user2, ""), width, height)); 
+            // Create the table object and push
+            mentettek.push_back(BeolvasottTabla(tabla, macs, man, width, height  ));  
+        } 
     }
-    return mentettek; 
+    return mentettek;
 }
 
 
 
 
 
-BeolvasottTabla** find_tables_by_username(const std::string& username, size_t& found_count, const std::string& filename = "finished.txt") {
-    std::vector<BeolvasottTabla> all_tables = tablakiolvas(filename);
-    std::vector<BeolvasottTabla*> matches;
 
-    for (auto& table : all_tables) {
-        // Check if either player's name matches the username
-        if (table.getcica().getname() == username || table.getman().getname() == username) {
-            matches.push_back(&table);
+BeolvasottTabla** find_tables_by_username(const std::string& username, size_t& found_count, const std::string& filename = "finished.txt") {  
+    std::vector<BeolvasottTabla> all_tables = tablakiolvas(filename); 
+    std::vector<BeolvasottTabla*> matches; 
+
+    for (auto& table : all_tables) { 
+        if (table.getcica().getname() == username || table.getman().getname() == username) { 
+            // Allocate a copy on the heap
+            matches.push_back(new BeolvasottTabla(table)); 
         }
     }
 
     found_count = matches.size();
     if (found_count == 0) return nullptr;
 
-    // Allocate array for the pointers
     BeolvasottTabla** result = new BeolvasottTabla * [found_count];
     for (size_t i = 0; i < found_count; ++i) {
         result[i] = matches[i];
@@ -1055,12 +1043,13 @@ BeolvasottTabla** find_tables_by_username(const std::string& username, size_t& f
 
 
 
+
 void tablakinez() {
 
     User user = bejelentkezes();
     size_t count = 0;
     BeolvasottTabla** tables = find_tables_by_username(user.getname(), count); 
-    walkcomments(reinterpret_cast<Kiolvasando**>(tables), count);
+    walkcomments(reinterpret_cast<Kiolvasando**>(tables), static_cast<int>(count));
 }
 
 

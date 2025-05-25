@@ -32,7 +32,7 @@ int main()
         if (valasztas == 0) ujjatek(); 
         if (valasztas == 1) fajlkiolvas("error.txt");
         if (valasztas == 2) { tablakinez(); } 
-        if (valasztas == 3) { size_t count = 0; comment** allcomments = read_comments(count); walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), count); }
+        if (valasztas == 3) { size_t count = 0; comment** allcomments = read_comments(count); walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), static_cast<int>(count)); }
         if (valasztas == 4) ertekel();
         if (valasztas == 5) usermodosit();
         if (valasztas == 6) animate();  
