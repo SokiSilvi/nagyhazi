@@ -628,7 +628,8 @@ public:
             std::getline(file, line);
 
             // Use your constructor
-            if (count < max_comments - 2) comments[count++] = new comment(nev, csillag, szoveg);
+            if (count < max_comments - 2) 
+                comments[count++] = new comment(nev, csillag, szoveg);
         }
 
         return comments;
@@ -657,8 +658,12 @@ public:
 
             if (key == KEY_ESCAPE) {
 
-                for (size_t i = 0; i < count; ++i) delete allcomments[i];
+                for (size_t i = 0; i < count; ++i) {
+                    delete allcomments[i];
+                    allcomments[i] = nullptr;
+                }
                 delete[] allcomments;
+                allcomments = nullptr;
                 kilepett = true;
 
             }
@@ -798,8 +803,8 @@ public:
 
 
 
-    std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) {
-        std::ifstream file(fajlnev);
+    std::vector<BeolvasottTabla> tablakiolvas(std::string fajlnev) { 
+        std::ifstream file(fajlnev); 
         std::vector<BeolvasottTabla> mentettek;
         std::string sor, user1, user2;
         int width = 0, height = 0;
@@ -864,7 +869,8 @@ public:
         }
 
         found_count = matches.size();
-        if (found_count == 0) return nullptr;
+        if (found_count == 0) 
+            return nullptr;
 
         BeolvasottTabla** result = new BeolvasottTabla * [found_count];
         for (size_t i = 0; i < found_count; ++i) {
@@ -872,8 +878,6 @@ public:
         }
         return result;
     }
-
-
 
 
     void tablakinez() {
@@ -1004,6 +1008,7 @@ public:
 
 
         delete[] tabla;
+        tabla = nullptr;
     }
 
 
@@ -1011,7 +1016,7 @@ public:
 
 
 
-    Mezo* ujjatek() {
+    void ujjatek() {
         Man man;
         Cat cat;
 
@@ -1030,7 +1035,8 @@ public:
         std::cout << width << ", " << length;
 
         int maxIndex = width * length;
-        if (width <= 0 || length <= 0) return nullptr; // Defensive: never allocate zero or negative
+        if (width <= 0 || length <= 0) 
+            return; // Defensive: never allocate zero or negative
 
         Mezo* pontok = new Mezo[maxIndex];
 
@@ -1072,14 +1078,8 @@ public:
         std::cout << "\n \n \n \n \n \n \n \n";
         tablarajzol(pontok, width, length, cat);
         jatsz(pontok, cat, man, length, width);
-        return pontok;
     }
-
-
-    void palya() {}
 };
-
-
 
 
 

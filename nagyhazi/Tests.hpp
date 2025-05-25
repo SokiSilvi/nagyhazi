@@ -11,7 +11,7 @@ public:
         GTINIT(std::cin);
 
         // Teszt az alapértelmezett Mezo konstruktorhoz
-        TEST(Mezo, DefaultConstructor) {
+        TEST(Mezo, DefaultConstructor){
             Mezo mezo;
             EXPECT_EQ(-1, mezo.getx()) << "Hibás x koordináta az alapértelmezett konstruktorban";
             EXPECT_EQ(-1, mezo.gety()) << "Hibás y koordináta az alapértelmezett konstruktorban";

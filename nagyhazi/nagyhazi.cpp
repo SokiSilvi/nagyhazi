@@ -34,7 +34,11 @@ int main()
         if (valasztas == 0) h.ujjatek();
         if (valasztas == 1) h.fajlkiolvas("error.txt");
         if (valasztas == 2) { h.tablakinez(); }
-        if (valasztas == 3) { size_t count = 0; comment** allcomments = h.read_comments(count); h.walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), static_cast<int>(count)); }
+        if (valasztas == 3) { 
+            size_t count = 0; 
+            comment** allcomments = h.read_comments(count); 
+            h.walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), static_cast<int>(count)); 
+        }
         if (valasztas == 4) h.ertekel();
         if (valasztas == 5) h.usermodosit();
         if (valasztas == 6) {

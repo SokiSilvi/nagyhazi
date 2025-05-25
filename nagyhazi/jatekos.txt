@@ -38,7 +38,7 @@ Becenév: DinDinDinDun
 Jelszo: ODinDinDinDinDunStrong
 Jatszott: 0
 
-e-mail cím: soki.szilvia03@gmail.com
+e-mail cím: szilvi.egyetemi@gmail.com
 Becenév: o
 Jelszo: o
 Jatszott: 4
@@ -71,5 +71,10 @@ Jatszott: 1
 e-mail cím: nagylehel1999@gmail.com
 Becenév: kiscica
 Jelszo: ABCxyz123
+Jatszott: 1
+
+e-mail cím: andras.soki2@gmail.com
+Becenév: sokia
+Jelszo: strongpassword
 Jatszott: 1
 

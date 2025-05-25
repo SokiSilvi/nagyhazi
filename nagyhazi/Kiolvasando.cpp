@@ -2,7 +2,7 @@
 #include "Kiolvasando.h"
 #include "mindenesheader.h"
 
-void BeolvasottTabla::prnt() {
+void BeolvasottTabla::prnt() { 
     HelperFunctions h;
     std::cout << "The cat was " << cica.getname() << "\n" << "The man was " << man.getname() << "\n\n";
     h.tablarajzol(tabla, width, length, cica);
