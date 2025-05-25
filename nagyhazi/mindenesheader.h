@@ -14,6 +14,9 @@
 #include "Kiolvasando.h"
 #include "Mezo.h"
 #include "Pont.h"
+#include <cstdlib>
+
+
 
 
 class HelperFunctions {
@@ -29,7 +32,7 @@ public:
     int sajatatoi(char ch) {
 
         std::string betuk = "0123456789abcdefghijklmnopqrstuvdxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for (int i = 0; i < betuk.size(); i++) {
+        for (size_t i = 0; i < betuk.size(); i++) {
 
             if (betuk[i] == ch) return i;
 
@@ -316,10 +319,16 @@ public:
         command += "Send-MailMessage -From \\\"" + username + "\\\" -To \\\"" + recipient + "\\\" -Subject \\\"" + subject + "\\\" ";
         command += "-Body \\\"" + body + "\\\" -SmtpServer \\\"" + smtpServer + "\\\" -Port " + smtpPort + " -UseSsl -Credential $credentials\"";
 
-        // Debug kiírás
-        //std::cout << "Futtatott parancs: " << command << std::endl;
+        //Debug kiírás
+        std::cout << "Futtatott parancs: " << command << std::endl;
 
-        int result = system(command.c_str());
+        //int result = system(command.c_str());
+        #ifdef system
+        #undef system
+        #endif
+
+        int result = ::system(command.c_str());
+
 
         if (result != 0) {
             key = "abc";
@@ -639,7 +648,7 @@ public:
 
     void walkcomments(Kiolvasando** allcomments, int count) {
 
-        size_t idx = 0;
+        int idx = 0;
         fajlkiolvas("commentsection.txt");
         bool kilepett = false;
         econio_rawmode();
@@ -658,7 +667,7 @@ public:
 
             if (key == KEY_ESCAPE) {
 
-                for (size_t i = 0; i < count; ++i) {
+                for (int i = 0; i < count; ++i) {
                     delete allcomments[i];
                     allcomments[i] = nullptr;
                 }
@@ -1024,6 +1033,8 @@ public:
         man = szemelyek("manplayersignin.txt", "manplayerregist.txt", "gazda-line-art.txt", "spencer.txt");
 
         bool shape = bipolar("shapesquare.txt", "shapepolygon.txt");
+        if (shape) std::cout << "Yaey its a squareeeee";
+        else std::cout << "Interesting! Could it be a 4-pointed polygon?";
 
         int length = 0;
         int width = 0;
