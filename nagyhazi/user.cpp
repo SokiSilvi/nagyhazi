@@ -1,82 +1,88 @@
-#include "user.h" 
+#include "memtrace.h"
+#include "User.h"
+#include "econio.h"
+#include "mindenesheader.h"
 
-bool modositFelhasznalo(const std::string& fajlNev, const std::string& becenev, int funkcio, const std::string& ujErtek) {
-    std::ifstream input(fajlNev);
-    if (!input) {
-        std::cerr << "Nem sikerült megnyitni a fájlt: " << fajlNev << std::endl;
-        return false;
-    }
 
-    std::ostringstream tartalomBuf;
-    tartalomBuf << input.rdbuf();
-    std::string tartalom = tartalomBuf.str();
-    input.close();
 
-    std::istringstream ss(tartalom);
-    std::ostringstream ujTartalom;
-    std::string sor;
+Mezo* Man::lep(Mezo* tabla, int width, int length, User& masik, bool& gameover) {
 
-    bool modositott = false;
+    std::string coor;
+    HelperFunctions h;
+    bool lepett = false;
+    while (not(lepett)) {
 
-    while (std::getline(ss, sor)) {
-        if (sor.find("e-mail cím:") == 0) {
-            std::string emailSor = sor;
-            std::string becenevSor, jelszoSor, jatszottSor;
+        std::cin >> coor;
 
-            std::getline(ss, becenevSor);
-            std::getline(ss, jelszoSor);
-            std::getline(ss, jatszottSor);
+        if (coor == "F11") {
+            bool really = h.savechoice(*this, masik);
+            if (really) {
 
-            std::string aktBecenev = becenevSor.substr(strlen("Becenév: "));
-            if (aktBecenev == becenev) {
-                // Módosítás itt történik
-                switch (funkcio) {
-                case -1: return true;
-                case 1:
-                    jelszoSor = "Jelszo: " + ujErtek;
-                    break;
-                case 2:
-                    emailSor = "e-mail cím: " + ujErtek;
-                    break;
-                case 3: {
-                    std::string jatszottStr = jatszottSor.substr(strlen("Jatszott: "));
-                    int szam = std::stoi(jatszottStr);
-                    ++szam;
-                    jatszottSor = "Jatszott: " + std::to_string(szam);
-                    break;
-                }
-                default:
-                    std::cerr << "Ismeretlen funkció: " << funkcio << std::endl;
-                    return false;
-                }
+                bool save = h.bipolar("returnno.txt", "returnyes.txt");
+                if (save) h.tablament("nemkesz.txt", tabla, width, length, masik, *this);
+                gameover = true;
 
-                modositott = true;
             }
-
-            // Írjuk vissza a blokkokat
-            ujTartalom << emailSor << '\n'
-                << becenevSor << '\n'
-                << jelszoSor << '\n'
-                << jatszottSor << '\n';
+            lepett = true;
+            break;
         }
-        else {
-            ujTartalom << sor << '\n'; // ritkán, de lehet üres sorok is
+
+        //std::cout << "\n \n A beirt koordinata " << coor << "volt"; 
+        for (int i = 0; i < width * length; i++) {
+
+            //std::cout << "\n a kovetkezo vizsgalt koordinata a " << tabla[i].getid() << "lesz ";
+            if (tabla[i].getid() == coor && tabla[i].getfreem()) { tabla[i].stoned(); lepett = true; break; }
+
         }
+
     }
+    return tabla;
 
-    if (!modositott) {
-        std::cerr << "Nem találtam a becenevet: " << becenev << std::endl;
-        return false;
+}
+
+
+
+Mezo* Cat::lep(Mezo* tabla, int width, int length, User& masik, bool& gameover) {
+
+    bool lepett = false;
+    HelperFunctions h;
+    h.fajlkiolvas("controlcat.txt");
+    Mezo next;
+    econio_rawmode();
+    while (not(lepett)) {
+
+        int key = econio_getch();
+        switch (key)
+        {
+        case(KEY_LEFT): { next = h.keresszomszed(tabla, this->where, 0, -1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_RIGHT): { next = h.keresszomszed(tabla, this->where, 0, 1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_UP): { next = h.keresszomszed(tabla, this->where, -1, 0, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_DOWN): { next = h.keresszomszed(tabla, this->where, 1, 0, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_CTRLDOWN): { next = h.keresszomszed(tabla, this->where, 1, 1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_CTRLUP): { next = h.keresszomszed(tabla, this->where, -1, -1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_CTRLLEFT): { next = h.keresszomszed(tabla, this->where, 1, -1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case((KEY_CTRLRIGHT)): { next = h.keresszomszed(tabla, this->where, -1, 1, length, width); lepett = h.catstepcorrect(next); tabla = h.tableuncat(tabla, width, length, this->where, next); if (lepett) where = next; break; }
+        case(KEY_CTRLDELETE): {
+
+            bool really = h.savechoice(*this, masik);
+            if (really) {
+
+                lepett = true;
+                bool save = h.bipolar("returnno.txt", "returnyes.txt");
+                if (save) h.tablament("nemkesz.txt", tabla, width, length, *this, masik);
+                gameover = true;
+
+            }
+            break;
+
+        }
+        default:
+            break;
+        }
+
+
     }
+    econio_normalmode();
+    return tabla;
 
-    std::ofstream output(fajlNev);
-    if (!output) {
-        std::cerr << "Nem sikerült írni a fájlba." << std::endl;
-        return false;
-    }
-
-    output << ujTartalom.str();
-    output.close();
-
-    return true;
 }

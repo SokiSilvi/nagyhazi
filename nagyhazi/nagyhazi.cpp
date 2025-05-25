@@ -1,22 +1,24 @@
 // nagyhazi.cpp : This file contains the 'main' function. Program execution begins and ends there.
 //
-
-#include <windows.h>
+#include "memtrace.h"
+//#include <windows.h>
 #include <iostream>
 #include <fstream>
 #include <string>
 #include "mindenesheader.h"
 #include "econio.h" 
+#include "Tests.hpp"
 
 
 int main()
 {
-    SetConsoleOutputCP(CP_UTF8);
+    HelperFunctions h;
+    //SetConsoleOutputCP(CP_UTF8);
     //ertekel(); 
     //animate();
     //bejelentkezes();
 
-    fajlkiolvas("line-arts.txt");
+    h.fajlkiolvas("line-arts.txt");
     system("pause >nul");
     //std::cout << "01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012456789012345678901234567890123456789";
     //User felhasznalo = regisztracio(); 
@@ -24,18 +26,21 @@ int main()
 
     
     //ujjatek();
-
-    while (true)
+    bool go = true;
+    while (go)
     {
-        int valasztas = arrowfind(2, 6, "menu.txt", 3);
+        int valasztas = h.arrowfind(2, 6, "menu.txt", 3);
 
-        if (valasztas == 0) ujjatek(); 
-        if (valasztas == 1) fajlkiolvas("error.txt");
-        if (valasztas == 2) { tablakinez(); } 
-        if (valasztas == 3) { size_t count = 0; comment** allcomments = read_comments(count); walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), static_cast<int>(count)); }
-        if (valasztas == 4) ertekel();
-        if (valasztas == 5) usermodosit();
-        if (valasztas == 6) animate();  
+        if (valasztas == 0) h.ujjatek();
+        if (valasztas == 1) h.fajlkiolvas("error.txt");
+        if (valasztas == 2) { h.tablakinez(); }
+        if (valasztas == 3) { size_t count = 0; comment** allcomments = h.read_comments(count); h.walkcomments(reinterpret_cast<Kiolvasando**>(allcomments), static_cast<int>(count)); }
+        if (valasztas == 4) h.ertekel();
+        if (valasztas == 5) h.usermodosit();
+        if (valasztas == 6) {
+            h.animate();
+            go = false;
+        }
 
     }
     

@@ -128,11 +128,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="econio.cpp" />
+    <ClCompile Include="Kiolvasando.cpp" />
+    <ClCompile Include="memtrace.cpp" />
     <ClCompile Include="nagyhazi.cpp" />
+    <ClCompile Include="user.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="econio.h" />
+    <ClInclude Include="gtest_lite.h" />
+    <ClInclude Include="Kiolvasando.h" />
+    <ClInclude Include="memtrace.h" />
+    <ClInclude Include="Mezo.h" />
     <ClInclude Include="mindenesheader.h" />
+    <ClInclude Include="Pont.h" />
+    <ClInclude Include="Tests.hpp" />
+    <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
